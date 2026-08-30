@@ -94,6 +94,12 @@ ecosystem to remain largely self-contained.
 
 ---
 
+## How the libraries are documented
+
+The editorial standard every `Uni*` repository writes against —
+what each surface must contain, what it refuses, and what is checked rather
+than trusted — is in [`docs/EDITORIAL.md`](docs/EDITORIAL.md).
+
 ## Organization
 
 Projects are grouped by topic but are designed to complement each other.
