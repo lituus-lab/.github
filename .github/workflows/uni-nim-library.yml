@@ -305,12 +305,44 @@ jobs:
         run: |
           set -eu
           python -m pip install nbconvert ipykernel
-          # Same neutral directory, same reason. GitHub renders the committed
-          # outputs, so executing them here keeps the notebook honest.
+          # Same neutral directory, same reason. GitHub renders the outputs
+          # committed in the file, so running the cells is not enough: what
+          # ships is honest only if the fresh outputs match the stored ones.
+          # Executing and discarding the result would prove the cells do not
+          # raise, and let a stale value -- an old version string, say -- go on
+          # being rendered as if it were current.
           work="$RUNNER_TEMP/wheel-check"
-          cp py/notebooks/quickstart.ipynb "$work/"
+          cp py/notebooks/quickstart.ipynb "$work/committed.ipynb"
           cd "$work"
-          jupyter nbconvert --execute --to notebook --stdout quickstart.ipynb > /dev/null
+          jupyter nbconvert --execute --to notebook --output fresh.ipynb committed.ipynb
+          python - <<'CHECK'
+          import json, sys
+
+          def outputs(path):
+              cells = json.load(open(path))["cells"]
+              got = []
+              for cell in cells:
+                  if cell["cell_type"] != "code":
+                      continue
+                  text = []
+                  for out in cell.get("outputs", []):
+                      text += out.get("text", [])
+                      text += out.get("data", {}).get("text/plain", [])
+                  got.append("".join(text).strip())
+              return got
+
+          stored, fresh = outputs("committed.ipynb"), outputs("fresh.ipynb")
+          if len(stored) != len(fresh):
+              sys.exit(f"notebook: {len(stored)} code cells stored, {len(fresh)} ran")
+          bad = [i for i, (a, b) in enumerate(zip(stored, fresh)) if a != b]
+          for i in bad:
+              print(f"cell {i}:\n  committed: {stored[i]!r}\n  actual:    {fresh[i]!r}",
+                    file=sys.stderr)
+          if bad:
+              sys.exit("notebook: committed outputs are not what the code produces;"
+                       " re-run py/notebooks/build_quickstart.py")
+          print(f"notebook: {len(stored)} cells, committed outputs match")
+          CHECK
 
   lint:
     name: Lint
