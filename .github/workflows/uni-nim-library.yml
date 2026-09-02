@@ -330,7 +330,19 @@ jobs:
           cd "$work"
           jupyter nbconvert --execute --to notebook --output fresh.ipynb committed.ipynb
           python - <<'CHECK'
-          import json, sys
+          import json, re, sys
+
+          # Round every standalone float before comparing. A notebook that
+          # demonstrates ULP-level behaviour prints a value whose last digits
+          # differ between arm64 and x86_64, and comparing those verbatim
+          # would make the check impossible to satisfy on both. The
+          # lookarounds keep version strings out of it: the `1.0` inside
+          # `1.0.0` is not a float, and a stale version is exactly what this
+          # check is for.
+          FLOAT = re.compile(r"(?<![\d.])-?\d+\.\d+(?:[eE][-+]?\d+)?(?![\d.])")
+
+          def norm(text):
+              return FLOAT.sub(lambda m: format(float(m.group()), ".10g"), text)
 
           def outputs(path):
               cells = json.load(open(path))["cells"]
@@ -342,7 +354,7 @@ jobs:
                   for out in cell.get("outputs", []):
                       text += out.get("text", [])
                       text += out.get("data", {}).get("text/plain", [])
-                  got.append("".join(text).strip())
+                  got.append(norm("".join(text).strip()))
               return got
 
           stored, fresh = outputs("committed.ipynb"), outputs("fresh.ipynb")
