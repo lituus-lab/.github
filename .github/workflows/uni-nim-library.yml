@@ -311,6 +311,13 @@ jobs:
       - name: Execute the quickstart notebook against the installed wheel
         run: |
           set -eu
+          # Two of the family have no quickstart yet. Say so and stop, rather
+          # than failing on a missing file: the check is about a notebook that
+          # lies, not about the absence of one.
+          if [ ! -f py/notebooks/quickstart.ipynb ]; then
+            echo "notebook: py/notebooks/quickstart.ipynb absent, nothing to check"
+            exit 0
+          fi
           python -m pip install nbconvert ipykernel
           # Same neutral directory, same reason. GitHub renders the outputs
           # committed in the file, so running the cells is not enough: what
