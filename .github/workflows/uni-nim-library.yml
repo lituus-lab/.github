@@ -285,6 +285,16 @@ jobs:
       - name: Install GNU make (Windows)
         if: runner.os == 'Windows'
         run: choco install make --no-progress -y
+      - name: Extra Debian packages
+        # This job links the archive against the system libraries the Makefile
+        # names, so it needs them as much as the build jobs do -- more visibly,
+        # since it has nothing else. It carries no setup-nim-action, which is
+        # why it was missed when this input was added.
+        if: runner.os == 'Linux' && inputs.apt-packages != ''
+        run: |
+          set -eu
+          sudo apt-get update
+          sudo apt-get install -y ${{ inputs.apt-packages }}
       - name: Compile and run a consumer against the artifact
         run: |
           set -eu
