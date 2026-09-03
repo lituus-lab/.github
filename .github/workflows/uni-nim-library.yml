@@ -44,6 +44,11 @@ on:
         required: false
         default: '["3.10", "3.11", "3.12", "3.13", "3.14"]'
         type: string
+      apt-packages:
+        description: 'Extra Debian packages the ubuntu runners install before building, space separated. Only for an engine that binds a system library: UniDAV needs libcurl headers, and a runner ships none. Empty everywhere else.'
+        required: false
+        default: ''
+        type: string
       publish-pages:
         description: 'Deploy the built docs. Off by default: across the family every one of these deployments reports success while every site answers 404, and a job that is red forever teaches everyone to ignore red.'
         required: false
@@ -108,6 +113,14 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: { persist-credentials: false }
+      - name: Extra Debian packages
+        # Only on ubuntu, only when a caller asked. macOS runners carry the
+        # headers this exists for, and Windows uses its own APIs.
+        if: runner.os == 'Linux' && inputs.apt-packages != ''
+        run: |
+          set -eu
+          sudo apt-get update
+          sudo apt-get install -y ${{ inputs.apt-packages }}
       - uses: jiro4989/setup-nim-action@cb1fc1270b117457dd0d9f610ec981fad3369cec # v2.3.0
         with:
           nim-version: ${{ inputs.nim-version }}
@@ -137,6 +150,14 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: { persist-credentials: false }
+      - name: Extra Debian packages
+        # Only on ubuntu, only when a caller asked. macOS runners carry the
+        # headers this exists for, and Windows uses its own APIs.
+        if: runner.os == 'Linux' && inputs.apt-packages != ''
+        run: |
+          set -eu
+          sudo apt-get update
+          sudo apt-get install -y ${{ inputs.apt-packages }}
       - uses: jiro4989/setup-nim-action@cb1fc1270b117457dd0d9f610ec981fad3369cec # v2.3.0
         with:
           nim-version: ${{ inputs.nim-version }}
@@ -186,6 +207,14 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: { persist-credentials: false }
+      - name: Extra Debian packages
+        # Only on ubuntu, only when a caller asked. macOS runners carry the
+        # headers this exists for, and Windows uses its own APIs.
+        if: runner.os == 'Linux' && inputs.apt-packages != ''
+        run: |
+          set -eu
+          sudo apt-get update
+          sudo apt-get install -y ${{ inputs.apt-packages }}
       - uses: jiro4989/setup-nim-action@cb1fc1270b117457dd0d9f610ec981fad3369cec # v2.3.0
         with:
           nim-version: ${{ inputs.nim-version }}
@@ -376,6 +405,14 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: { persist-credentials: false }
+      - name: Extra Debian packages
+        # Only on ubuntu, only when a caller asked. macOS runners carry the
+        # headers this exists for, and Windows uses its own APIs.
+        if: runner.os == 'Linux' && inputs.apt-packages != ''
+        run: |
+          set -eu
+          sudo apt-get update
+          sudo apt-get install -y ${{ inputs.apt-packages }}
       - uses: jiro4989/setup-nim-action@cb1fc1270b117457dd0d9f610ec981fad3369cec # v2.3.0
         with:
           nim-version: ${{ inputs.nim-version }}
@@ -408,6 +445,14 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: { persist-credentials: false }
+      - name: Extra Debian packages
+        # Only on ubuntu, only when a caller asked. macOS runners carry the
+        # headers this exists for, and Windows uses its own APIs.
+        if: runner.os == 'Linux' && inputs.apt-packages != ''
+        run: |
+          set -eu
+          sudo apt-get update
+          sudo apt-get install -y ${{ inputs.apt-packages }}
       - uses: jiro4989/setup-nim-action@cb1fc1270b117457dd0d9f610ec981fad3369cec # v2.3.0
         with:
           nim-version: ${{ inputs.nim-version }}
@@ -471,6 +516,14 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: { persist-credentials: false }
+      - name: Extra Debian packages
+        # Only on ubuntu, only when a caller asked. macOS runners carry the
+        # headers this exists for, and Windows uses its own APIs.
+        if: runner.os == 'Linux' && inputs.apt-packages != ''
+        run: |
+          set -eu
+          sudo apt-get update
+          sudo apt-get install -y ${{ inputs.apt-packages }}
       - uses: jiro4989/setup-nim-action@cb1fc1270b117457dd0d9f610ec981fad3369cec # v2.3.0
         with:
           nim-version: ${{ inputs.nim-version }}
@@ -497,6 +550,14 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: { persist-credentials: false }
+      - name: Extra Debian packages
+        # Only on ubuntu, only when a caller asked. macOS runners carry the
+        # headers this exists for, and Windows uses its own APIs.
+        if: runner.os == 'Linux' && inputs.apt-packages != ''
+        run: |
+          set -eu
+          sudo apt-get update
+          sudo apt-get install -y ${{ inputs.apt-packages }}
       - uses: jiro4989/setup-nim-action@cb1fc1270b117457dd0d9f610ec981fad3369cec # v2.3.0
         with:
           nim-version: ${{ inputs.nim-version }}
