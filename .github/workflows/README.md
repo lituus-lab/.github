@@ -50,7 +50,7 @@ other action.
 | `library` | yes | PascalCase: `UniChecksum`. Gives `include/<library>.h`, `lib<library>.*`, and the artifact names. |
 | `module` | yes | The same name in lower case: `unichecksum`. Names the Python import, `tests/c/test_<module>.c`, and the wheel artifacts. The PyPI distribution is `lituus-<module>`; the import name is not namespaced. |
 | `python-smoke-test` | yes | The test copied outside the checkout, to prove the installed wheel stands alone. |
-| `nim-version` | no | Default `2.2.10`. |
+| `nim-version` | no | Default `2.2.12`. |
 | `os` | no | JSON array. Default all three runners. |
 | `python-versions` | no | JSON array. Default 3.10 to 3.14. Without `Py_LIMITED_API` each CPython minor has its own C ABI, so each needs its own run. |
 | `publish-pages` | no | Default false. Across the family every one of these deployments reports success while every site answers 404 and no Pages build is ever recorded; a job that is red forever teaches everyone to ignore red. |
